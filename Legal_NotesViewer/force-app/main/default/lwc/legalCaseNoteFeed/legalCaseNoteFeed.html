@@ -1,0 +1,122 @@
+<template>
+  <lightning-card title="Case Notes Feed">
+    <div class="note-feed">
+      <div class="note-feed__header">
+        <lightning-input
+          type="search"
+          label="Search case notes"
+          variant="label-hidden"
+          placeholder="Search notes by subject or content..."
+          onchange={handleSearchInput}
+          class="note-feed__search"
+        ></lightning-input>
+        <lightning-combobox
+          label="Sort"
+          variant="label-hidden"
+          value={sortDirection}
+          options={sortOptions}
+          onchange={handleSortChange}
+          class="note-feed__sort"
+        ></lightning-combobox>
+      </div>
+
+      <template if:true={errorMessage}>
+        <div class="note-feed__error" role="alert">{errorMessage}</div>
+      </template>
+
+      <div class="note-feed__scroll" onscroll={handleScroll}>
+        <template if:true={isLoading}>
+          <lightning-spinner
+            alternative-text="Loading notes"
+            size="small"
+          ></lightning-spinner>
+        </template>
+
+        <template if:true={showEmptyNoNotes}>
+          <p class="note-feed__empty">
+            No notes have been logged on this case yet.
+          </p>
+        </template>
+
+        <template if:true={showEmptyNoMatches}>
+          <p class="note-feed__empty">No notes match your search.</p>
+        </template>
+
+        <template for:each={notes} for:item="note">
+          <article key={note.Id} class="note-card">
+            <div class="note-card__header">
+              <span class="note-card__subject">{note.Subject__c}</span>
+              <lightning-formatted-date-time
+                value={note.NoteDate__c}
+                year="numeric"
+                month="short"
+                day="2-digit"
+              ></lightning-formatted-date-time>
+            </div>
+
+            <div class="note-card__meta">
+              <template if:true={note.authorUrl}>
+                <a
+                  href={note.authorUrl}
+                  data-note-id={note.Id}
+                  onclick={handleAuthorClick}
+                  class="note-card__author-link"
+                  >{note.authorName}</a
+                >
+              </template>
+              <template if:false={note.authorUrl}>
+                <span class="note-card__author">{note.authorName}</span>
+              </template>
+              <template if:true={note.editUrl}>
+                <a
+                  href={note.editUrl}
+                  data-note-id={note.Id}
+                  onclick={handleEditClick}
+                  class="note-card__edit-link"
+                  >Edit</a
+                >
+              </template>
+            </div>
+
+            <template if:false={note.isExpanded}>
+              <p class="note-card__body">
+                <template for:each={note.previewSegments} for:item="segment">
+                  <template if:true={segment.isMatch}>
+                    <mark key={segment.key}>{segment.text}</mark>
+                  </template>
+                  <template if:false={segment.isMatch}>
+                    <span key={segment.key}>{segment.text}</span>
+                  </template>
+                </template>
+              </p>
+            </template>
+            <template if:true={note.isExpanded}>
+              <lightning-formatted-rich-text
+                class="note-card__body"
+                value={note.NoteDetail__c}
+              ></lightning-formatted-rich-text>
+            </template>
+
+            <template if:true={note.isTruncated}>
+              <button
+                type="button"
+                class="note-card__toggle"
+                data-note-id={note.Id}
+                onclick={handleToggleExpand}
+              >
+                {note.toggleLabel}
+              </button>
+            </template>
+          </article>
+        </template>
+
+        <template if:true={isLoadingMore}>
+          <lightning-spinner
+            alternative-text="Loading more notes"
+            size="x-small"
+          ></lightning-spinner>
+        </template>
+      </div>
+    </div>
+  </lightning-card>
+</template>

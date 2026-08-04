@@ -1,0 +1,25 @@
+# Sensitive client data - do not commit
+dataload/
+
+# Claude Code session settings
+.claude/
+
+# Salesforce CLI cache
+.sfdx/
+.sf/
+
+# Excel data files (may contain raw client data)
+*.xlsx
+
+# Node dependencies (also covered by sub-project .gitignores)
+node_modules/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
