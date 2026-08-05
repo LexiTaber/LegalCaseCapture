@@ -18,6 +18,8 @@ items off with the date resolved rather than deleting them.
   Found during production-deploy prep on 2026-07-29 — it is *not* the object
   any working Apex/LWC/permission set actually uses; `Time_Entry__c` is.
 
+- [ ] ** Add Case Team Records to each Legal Case record based on available information (add Case Team Records where Staff Role = Lead Attorney and Supporting Attorney)
+
 ---
 
 ## Resolved
